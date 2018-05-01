@@ -220,11 +220,14 @@ namespace PingCastle.Scanners
 				stream.Write(packet, 0, packet.Length);
 				stream.Flush();
 				byte[] netbios = new byte[4];
-				stream.Read(netbios, 0, 4);
+				if (stream.Read(netbios, 0, netbios.Length) != netbios.Length)
+                    return false;
 				byte[] smbHeader = new byte[Marshal.SizeOf(typeof(SMB_Header))];
-				stream.Read(smbHeader, 0, smbHeader.Length);
+				if (stream.Read(smbHeader, 0, smbHeader.Length) != smbHeader.Length)
+                    return false;
 				byte[] negotiateresponse = new byte[3];
-				stream.Read(negotiateresponse, 0, negotiateresponse.Length);
+				if (stream.Read(negotiateresponse, 0, negotiateresponse.Length) != negotiateresponse.Length)
+                    return false;
 				if (negotiateresponse[1] == 0 && negotiateresponse[2] == 0)
 				{
 					Trace.WriteLine("Checking " + server + " for SMBV1 dialect " + dialect + " = Supported");
@@ -260,16 +263,19 @@ namespace PingCastle.Scanners
 				stream.Write(packet, 0, packet.Length);
 				stream.Flush();
 				byte[] netbios = new byte[4];
-				stream.Read(netbios, 0, 4);
+				if( stream.Read(netbios, 0, netbios.Length) != netbios.Length)
+                    return false;
 				byte[] smbHeader = new byte[Marshal.SizeOf(typeof(SMB2_Header))];
-				stream.Read(smbHeader, 0, smbHeader.Length);
+				if (stream.Read(smbHeader, 0, smbHeader.Length) != smbHeader.Length)
+                    return false;
 				if (smbHeader[8] != 0 || smbHeader[9] != 0 || smbHeader[10] != 0 || smbHeader[11] != 0)
 				{
 					Trace.WriteLine("Checking " + server + " for SMBV1 dialect 0x" + dialect.ToString("X2") + " = Not supported via error code");
 					return false;
 				}
 				byte[] negotiateresponse = new byte[6];
-				stream.Read(negotiateresponse, 0, negotiateresponse.Length);
+				if (stream.Read(negotiateresponse, 0, negotiateresponse.Length) != negotiateresponse.Length)
+                    return false;
 				int selectedDialect = negotiateresponse[5] * 0x100 + negotiateresponse[4];
 				if (selectedDialect == dialect)
 				{
