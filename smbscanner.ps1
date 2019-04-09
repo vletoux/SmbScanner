@@ -386,4 +386,5 @@ namespace PingCastle.Scanners
 "@
 Add-Type -TypeDefinition $Source
 
-[PingCastle.Scanners.SmbScanner]::GetCsv("192.168.0.25")
+# Run example:
+# [PingCastle.Scanners.SmbScanner]::GetCsv("192.168.0.25")
